@@ -1,0 +1,9 @@
+!!!THINGS TO DO BEFORE ZIPPING NEW PACKAGES!!!
+
+* Delete .git directory
+
+* config.php changes:
+    'disabled' => true,
+    'uploadURL' => "upload",
+
+* Delete this file
