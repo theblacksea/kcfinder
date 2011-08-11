@@ -21,11 +21,11 @@ $_CONFIG = array(
     'disabled' => false,
     'denyZipDownload' => false,
     'denyUpdateCheck' => false,
-    'denyExtensionRename' => true,
+    'denyExtensionRename' => false,
 
     'theme' => "oxygen",
 
-    'uploadURL' => "http://kcfinder.sunhater.com/upload",
+    'uploadURL' => "upload",
     'uploadDir' => "",
 
     'dirPerms' => 0755,
@@ -53,12 +53,12 @@ $_CONFIG = array(
     'types' => array(
 
         // CKEditor & FCKEditor types
-        'files'   =>  "*mime ! application/octet-stream application/x-bzip2 application/x-gzip application/zip",
+        'files'   =>  "",
         'flash'   =>  "swf",
         'images'  =>  "*img",
 
         // TinyMCE types
-        'file'    =>  "*mime ! application/octet-stream application/x-bzip2 application/x-gzip application/zip",
+        'file'    =>  "",
         'media'   =>  "swf flv avi mpg mpeg qt mov wmv asf rm",
         'image'   =>  "*img",
     ),
@@ -75,7 +75,7 @@ $_CONFIG = array(
 
     'mime_magic' => "",
 
-    'maxImageWidth' => 800,
+    'maxImageWidth' => 0,
     'maxImageHeight' => 0,
 
     'thumbWidth' => 100,
@@ -85,21 +85,21 @@ $_CONFIG = array(
 
     'jpegQuality' => 90,
 
-    'cookieDomain' => "kcfinder.sunhater.com",
-    'cookiePath' => "/",
+    'cookieDomain' => "",
+    'cookiePath' => "",
     'cookiePrefix' => 'KCFINDER_',
 
     // THE FOLLOWING SETTINGS CANNOT BE OVERRIDED WITH SESSION CONFIGURATION
 
     '_check4htaccess' => true,
-    '_tinyMCEPath' => "/demo/tiny_mce",
+    //'_tinyMCEPath' => "/tiny_mce",
 
     '_sessionVar' => &$_SESSION['KCFINDER'],
     //'_sessionLifetime' => 30,
-    //'_sessionDir' => "",
+    //'_sessionDir' => "/full/directory/path",
 
-    //'_sessionDomain' => "",
-    //'_sessionPath' => "/",
+    //'_sessionDomain' => ".mysite.com",
+    //'_sessionPath' => "/my/path",
 );
 
 ?>
