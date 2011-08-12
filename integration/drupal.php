@@ -1,9 +1,22 @@
 <?php
-// Add $_CONFIG['_dontStartSession'] to stop kcfinder from starting it's own session
-$_CONFIG['_dontStartSession'] = true;
+/** This file is part of KCFinder project
+  *
+  *      @desc CMS integration code: Drupal 
+  *   @package KCFinder
+  *   @version 2.42-dev
+  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+  * @copyright 2010, 2011 KCFinder Project
+  *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
+  *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
+  *      @link http://kcfinder.sunhater.com
+  */
 
-// Drupal integration utility functions
+
 spl_autoload_register('__autoload');
+
+// Define INTEGRATE_STOPSESS to stop kcfinder from starting it's own session
+define('INTEGRATE_STOPSESS', 'true');
+
 
 // gets a valid drupal_path
 function get_drupal_path() {
@@ -60,21 +73,27 @@ function CheckAuthentication($drupal_path) {
 			$base_url = substr($base_url, 0, $pos); // drupal root absolute url
 			
 			// bootstrap
-			require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
+			require_once(DRUPAL_ROOT . '/includes/bootstrap.inc');
 			drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 			
 			// if user has access permission...
-			if ($authenticated = user_access('access kcfinder')) {
+			if (user_access('access kcfinder')) {
 				if (!isset($_SESSION['KCFINDER'])) {
 					$_SESSION['KCFINDER'] = array();
 					$_SESSION['KCFINDER']['disabled'] = false;
 				}
+				
+				// User has permission, so make sure KCFinder is not disabled!
+				if(!isset($_SESSION['KCFINDER']['disabled'])) {
+					$_SESSION['KCFINDER']['disabled'] = false;
+				}
+				
 				global $user;
 				$_SESSION['KCFINDER']['uploadURL'] = strtr(variable_get('kcfinder_upload_url', 'sites/default/files/kcfinder'), array('%u' => $user->uid, '%n' => $user->name));
 				$_SESSION['KCFINDER']['uploadDir'] = variable_get('kcfinder_upload_dir', '');
 				
-				//echo 'uploadURL: ' . $_SESSION['KCFINDER']['uploadURL'];
-				//echo 'uploadDir: ' . $_SESSION['KCFINDER']['uploadDir'];
+				//echo '<br>uploadURL: ' . $_SESSION['KCFINDER']['uploadURL'];
+				//echo '<br>uploadDir: ' . $_SESSION['KCFINDER']['uploadDir'];
 				
 				chdir($current_cwd);
 				

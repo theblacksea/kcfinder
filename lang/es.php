@@ -19,10 +19,10 @@ $lang = array(
     "No tiene permisos para subir archivos.",
 
     "You don't have permissions to browse server." =>
-    "No tiene permisos para vizualizar archivos.",
+    "No tiene permisos para visualizar archivos.",
 
     "Cannot move uploaded file to target folder." =>
-    "No puede mover archivos al directorio destino",
+    "No se puede mover archivos al directorio de destino",
 
     "Unknown error." =>
     "Error desconocido.",

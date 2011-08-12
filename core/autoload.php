@@ -23,7 +23,7 @@
 // CMS INTEGRATION
 if (isset($_GET['cms'])) {
     switch ($_GET['cms']) {
-		case 'drupal': include_once('../integration_drupal.php');
+		case 'drupal': require_once('integration/drupal.php'); break;
 	}
 }
 
