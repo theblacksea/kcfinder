@@ -4,19 +4,12 @@
   *      @desc CMS integration code: Drupal 
   *   @package KCFinder
   *   @version 2.42-dev
-  *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
+  *    @author Dany Alejandro Cabrera <otello2040@gmail.com>
   * @copyright 2010, 2011 KCFinder Project
   *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
   *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
   *      @link http://kcfinder.sunhater.com
   */
-
-
-spl_autoload_register('__autoload');
-
-// Define INTEGRATE_STOPSESS to stop kcfinder from starting it's own session
-define('INTEGRATE_STOPSESS', 'true');
-
 
 // gets a valid drupal_path
 function get_drupal_path() {
@@ -107,4 +100,6 @@ function CheckAuthentication($drupal_path) {
 }
 
 CheckAuthentication(get_drupal_path());
+
+spl_autoload_register('__autoload');
 ?>

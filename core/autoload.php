@@ -21,10 +21,9 @@
   */
 
 // CMS INTEGRATION
-if (isset($_GET['cms'])) {
-    switch ($_GET['cms']) {
-		case 'drupal': require_once('integration/drupal.php'); break;
-	}
+include('config.php');
+switch($_CONFIG['_cmsIntegration']) {
+	case 'drupal': require_once('integration/drupal.php'); break;
 }
 
 // PHP VERSION CHECK
