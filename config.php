@@ -90,7 +90,7 @@ $_CONFIG = array(
     'cookiePrefix' => 'KCFINDER_',
 
     // THE FOLLOWING SETTINGS CANNOT BE OVERRIDED WITH SESSION CONFIGURATION
-
+	'_cmsIntegration' => '',
     '_check4htaccess' => true,
     //'_tinyMCEPath' => "/tiny_mce",
 
