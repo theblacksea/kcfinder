@@ -20,11 +20,6 @@
   *        It's recommended to use constants instead.
   */
 
-// CMS INTEGRATION
-include('config.php');
-switch($_CONFIG['_cmsIntegration']) {
-	case 'drupal': require_once('integration/drupal.php'); break;
-}
 
 // PHP VERSION CHECK
 if (substr(PHP_VERSION, 0, strpos(PHP_VERSION, '.')) < 5)
@@ -39,6 +34,14 @@ if (!function_exists("imagecopyresampled"))
 // SAFE MODE CHECK
 if (ini_get("safe_mode"))
     die("The \"safe_mode\" PHP ini setting is turned on! You cannot run KCFinder in safe mode.");
+
+
+// CMS INTEGRATION
+require "config.php";
+if (strlen($_CONFIG['_cmsIntegration']) &&
+    file_exists("integration/{$_CONFIG['_cmsIntegration']}.php")
+)
+	require "integration/{$_CONFIG['_cmsIntegration']}.php";
 
 
 // MAGIC AUTOLOAD CLASSES FUNCTION
