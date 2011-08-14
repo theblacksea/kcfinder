@@ -99,7 +99,7 @@ class uploader {
 
 /** Magic method which allows read-only access to protected or private class properties
   * @param string $property
-  * @return unknown */
+  * @return mixed */
     public function __get($property) {
         return property_exists($this, $property) ? $this->$property : null;
     }
