@@ -37,8 +37,8 @@ if (ini_get("safe_mode"))
 
 
 // CMS INTEGRATION
-if (isset($_GET["cms"])) {
-    switch ($_GET["cms"]) {
+if (isset($_GET['cms'])) {
+    switch ($_GET['cms']) {
         case "drupal": require "integration/drupal.php";
     }
 }

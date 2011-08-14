@@ -18,7 +18,7 @@
 
 $_CONFIG = array(
 
-    'disabled' => true,
+    'disabled' => false,
     'denyZipDownload' => false,
     'denyUpdateCheck' => false,
     'denyExtensionRename' => false,
@@ -90,7 +90,7 @@ $_CONFIG = array(
     'cookiePrefix' => 'KCFINDER_',
 
     // THE FOLLOWING SETTINGS CANNOT BE OVERRIDED WITH SESSION CONFIGURATION
-	'_check4htaccess' => true,
+    '_check4htaccess' => true,
     //'_tinyMCEPath' => "/tiny_mce",
 
     '_sessionVar' => &$_SESSION['KCFINDER'],

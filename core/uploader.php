@@ -13,28 +13,93 @@
   */
 
 class uploader {
+
+/** Release version */
     const VERSION = "2.42-dev";
+
+/** Config session-overrided settings
+  * @var array  */
     protected $config = array();
+
+/** Opener applocation properties
+  *   $opener['name']                 Got from $_GET['openerer'];
+  *   $opener['CKEditor']['funcNum']  CKEditor function nomber (got from $_GET)
+  *   $opener['TinyMCE']              Boolean
+  * @var array */
     protected $opener = array();
+
+/** Got from $_GET['type'] or first one $config['types'] array key, if inexistant
+  * @var string */
     protected $type;
+
+/** Helper property. Local filesystem path to the Type Directory
+  * Equivalent: $config['uploadDir'] . "/" . $type
+  * @var string */
+
     protected $typeDir;
+
+/** Helper property. Web URL to the Type Directory
+  * Equivalent: $config['uploadURL'] . "/" . $type
+  * @var string */
     protected $typeURL;
+
+/** Linked to $config['types']
+  * @var array */
     protected $types = array();
+
+/** Settings which can override default settings if exists as keys in $config['types'][$type] array
+  * @var array */
     protected $typeSettings = array('disabled', 'theme', 'dirPerms', 'filePerms', 'denyZipDownload', 'maxImageWidth', 'maxImageHeight', 'thumbWidth', 'thumbHeight', 'jpegQuality', 'access', 'filenameChangeChars', 'dirnameChangeChars', 'denyExtensionRename', 'deniedExts');
+
+/** Got from language file
+  * @var string */
     protected $charset;
+
+/** The language got from $_GET['lng'] or $_GET['lang'] or... Please see next property
+  * @var string */
     protected $lang = 'en';
+
+/** Possible language $_GET keys
+  * @var array */
     protected $langInputNames = array('lang', 'langCode', 'lng', 'language', 'lang_code');
+
+/** Uploaded file(s) info. Linked to first $_FILES element
+  * @var array */
     protected $file;
+
+/** Next three properties are got from the current language file
+  * @var string */
     protected $dateTimeFull;   // Currently not used
     protected $dateTimeMid;    // Currently not used
     protected $dateTimeSmall;
-    protected $labels = array();
-    protected $get;
-    protected $post;
-    protected $cookie;
-    protected $session;
-	protected $cms; // CMS integration attribute
 
+/** Contain Specified language labels
+  * @var array */
+    protected $labels = array();
+
+/** Contain unprocessed $_GET array. Please use this instead of $_GET
+  * @var array */
+    protected $get;
+
+/** Contain unprocessed $_POST array. Please use this instead of $_POST
+  * @var array */
+    protected $post;
+
+/** Contain unprocessed $_COOKIE array. Please use this instead of $_COOKIE
+  * @var array */
+    protected $cookie;
+
+/** Session array. Please use this property instead of $_SESSION
+  * @var array */
+    protected $session;
+
+/** CMS integration attribute (got from $_GET['cms'])
+  * @var string */
+    protected $cms;
+
+/** Magic method which allows read-only access to protected or private class properties
+  * @param string $property
+  * @return unknown */
     public function __get($property) {
         return property_exists($this, $property) ? $this->$property : null;
     }
@@ -52,13 +117,11 @@ class uploader {
         $this->cookie = &$input->cookie;
 
         // SET CMS INTEGRATION ATTRIBUTE
-		$this->cms = "";
-		if (isset($_GET["cms"])) {
-			if (in_array($_GET["cms"], array("drupal"))) {
-				$this->cms = $_GET["cms"];
-			}
-		}
-		
+        if (isset($this->get['cms']) &&
+            in_array($this->get['cms'], array("drupal"))
+        )
+            $this->cms = $this->get['cms'];
+
 		// LINKING UPLOADED FILE
         if (count($_FILES))
             $this->file = &$_FILES[key($_FILES)];
@@ -77,7 +140,7 @@ class uploader {
             case "drupal": break;
             default: session_start(); break;
         }
-        
+
         // RELOAD DEFAULT CONFIGURATION
         require "config.php";
         $this->config = $_CONFIG;

@@ -32,7 +32,7 @@ browser.opener.CKEditor.funcNum = <?php echo $this->opener['CKEditor']['funcNum'
 <?php IF (isset($this->opener['TinyMCE']) && $this->opener['TinyMCE']): ?>
 browser.opener.TinyMCE = true;
 <?php ENDIF ?>
-browser.cms = "<?php echo $this->cms ?>";
+browser.cms = "<?php echo text::jsValue($this->cms) ?>";
 _.kuki.domain = "<?php echo text::jsValue($this->config['cookieDomain']) ?>";
 _.kuki.path = "<?php echo text::jsValue($this->config['cookiePath']) ?>";
 _.kuki.prefix = "<?php echo text::jsValue($this->config['cookiePrefix']) ?>";

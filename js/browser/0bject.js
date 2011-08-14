@@ -20,5 +20,5 @@ var browser = {
     labels: [],
     shows: [],
     orders: [],
-	cms: ""
+    cms: ""
 };

@@ -333,7 +333,7 @@ browser.baseGetData = function(act) {
     var data = 'browse.php?type=' + encodeURIComponent(this.type) + '&lng=' + this.lang;
     if (act)
         data += "&act=" + act;
-	if (this.cms)
+    if (this.cms)
         data += "&cms=" + this.cms;
     return data;
 };
