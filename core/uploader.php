@@ -95,7 +95,7 @@ class uploader {
 
 /** CMS integration attribute (got from $_GET['cms'])
   * @var string */
-    protected $cms;
+    protected $cms = "";
 
 /** Magic method which allows read-only access to protected or private class properties
   * @param string $property
