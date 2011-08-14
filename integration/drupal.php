@@ -40,7 +40,8 @@ function get_drupal_path() {
 }
 
 function CheckAuthentication($drupal_path) {
-    static $authenticated;
+    
+	static $authenticated;
 
     if (!isset($authenticated)) {
 
@@ -66,6 +67,12 @@ function CheckAuthentication($drupal_path) {
 			$pos = strpos($base_url, '/sites/');
 			$base_url = substr($base_url, 0, $pos); // drupal root absolute url
 
+			// If we aren't in a Drupal installation, or if Drupal path hasn't been properly found, die
+			if(!file_exists(DRUPAL_ROOT . '/includes/bootstrap.inc')) {
+				die("The CMS integration service for -drupal- requires KCFinder to be properly placed inside your Drupal installation.");
+			}
+			
+			
 			// bootstrap
 			require_once(DRUPAL_ROOT . '/includes/bootstrap.inc');
 			drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
@@ -86,8 +93,8 @@ function CheckAuthentication($drupal_path) {
 				$_SESSION['KCFINDER']['uploadURL'] = strtr(variable_get('kcfinder_upload_url', 'sites/default/files/kcfinder'), array('%u' => $user->uid, '%n' => $user->name));
 				$_SESSION['KCFINDER']['uploadDir'] = variable_get('kcfinder_upload_dir', '');
 
-				//echo '<br>uploadURL: ' . $_SESSION['KCFINDER']['uploadURL'];
-				//echo '<br>uploadDir: ' . $_SESSION['KCFINDER']['uploadDir'];
+				//echo '<br />uploadURL: ' . $_SESSION['KCFINDER']['uploadURL']<br />;
+				//echo '<br />uploadDir: ' . $_SESSION['KCFINDER']['uploadDir']<br />;
 
 				chdir($current_cwd);
 

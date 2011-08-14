@@ -19,5 +19,6 @@ var browser = {
     clipboard: [],
     labels: [],
     shows: [],
-    orders: []
+    orders: [],
+	cms: ""
 };

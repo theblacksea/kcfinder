@@ -33,6 +33,7 @@ class uploader {
     protected $post;
     protected $cookie;
     protected $session;
+	protected $cms; // CMS integration attribute
 
     public function __get($property) {
         return property_exists($this, $property) ? $this->$property : null;
@@ -50,7 +51,15 @@ class uploader {
         $this->post = &$input->post;
         $this->cookie = &$input->cookie;
 
-        // LINKING UPLOADED FILE
+        // SET CMS INTEGRATION ATTRIBUTE
+		$this->cms = "";
+		if (isset($_GET["cms"])) {
+			if (in_array($_GET["cms"], array("drupal"))) {
+				$this->cms = $_GET["cms"];
+			}
+		}
+		
+		// LINKING UPLOADED FILE
         if (count($_FILES))
             $this->file = &$_FILES[key($_FILES)];
 
@@ -64,9 +73,11 @@ class uploader {
             ini_set('session.save_path', $_CONFIG['_sessionDir']);
         if (isset($_CONFIG['_sessionDomain']))
             ini_set('session.cookie_domain', $_CONFIG['_sessionDomain']);
-        if ($_CONFIG['_cmsIntegration'] != 'drupal')
-            session_start();
-
+        switch ($this->cms) {
+            case "drupal": break;
+            default: session_start(); break;
+        }
+        
         // RELOAD DEFAULT CONFIGURATION
         require "config.php";
         $this->config = $_CONFIG;

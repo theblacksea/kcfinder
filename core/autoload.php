@@ -37,11 +37,11 @@ if (ini_get("safe_mode"))
 
 
 // CMS INTEGRATION
-require "config.php";
-if (strlen($_CONFIG['_cmsIntegration']) &&
-    file_exists("integration/{$_CONFIG['_cmsIntegration']}.php")
-)
-	require "integration/{$_CONFIG['_cmsIntegration']}.php";
+if (isset($_GET["cms"])) {
+    switch ($_GET["cms"]) {
+        case "drupal": require "integration/drupal.php";
+    }
+}
 
 
 // MAGIC AUTOLOAD CLASSES FUNCTION
