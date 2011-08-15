@@ -22,8 +22,8 @@ class uploader {
     protected $config = array();
 
 /** Opener applocation properties
-  *   $opener['name']                 Got from $_GET['openerer'];
-  *   $opener['CKEditor']['funcNum']  CKEditor function nomber (got from $_GET)
+  *   $opener['name']                 Got from $_GET['opener'];
+  *   $opener['CKEditor']['funcNum']  CKEditor function number (got from $_GET)
   *   $opener['TinyMCE']              Boolean
   * @var array */
     protected $opener = array();

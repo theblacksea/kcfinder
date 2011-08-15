@@ -101,6 +101,10 @@ legend {
     -webkit-border-radius: 6px;
 }
 
+#files.drag {
+    background: #ddebf8;
+}
+
 #topic {
     padding-left: 12px;
 }

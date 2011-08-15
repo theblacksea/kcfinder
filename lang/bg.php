@@ -250,6 +250,11 @@ $lang = array(
 
     "You cannot rename the extension of files!" =>
     "Не можете да преименувате разширенията на файловете!",
+
+    "Uploading file {number} of {count}... {progress}" =>
+    "Качване на файл {number} от {count}... {progress}",
+
+    "Failed to upload {filename}!" => "Несполучливо качване на {filename}!",
 );
 
 ?>
