@@ -110,7 +110,7 @@
                         postbody += '\r\n';
                         if (evt.target.thisFileSize)
                             postbody += 'Content-Length: ' + evt.target.thisFileSize + '\r\n';
-                        postbody += 'Content-Type: ' + evt.target.thisFileType + '\r\n\r\n' + evt.target.result + '\r\n--' + boundary + '\r\nContent-Disposition: form-data; name="dir"\r\n\r\n' + _.escapeDirs(evt.target.thisTargetDir) + '\r\n--' + boundary + '\r\n--' + boundary + '--\r\n';
+                        postbody += 'Content-Type: ' + evt.target.thisFileType + '\r\n\r\n' + evt.target.result + '\r\n--' + boundary + '\r\nContent-Disposition: form-data; name="dir"\r\n\r\n' + _.utf8encode(evt.target.thisTargetDir) + '\r\n--' + boundary + '\r\n--' + boundary + '--\r\n';
 
                         var xhr = new XMLHttpRequest();
                         xhr.thisFileName = evt.target.thisFileName;
@@ -120,7 +120,7 @@
                             xhr.upload.addEventListener("progress", updateProgress, false);
                         }
                         xhr.open("POST", browser.baseGetData('upload'), true);
-                        xhr.setRequestHeader('content-type', 'multipart/form-data; boundary=' + boundary);
+                        xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
                         xhr.setRequestHeader("Content-Length", postbody.length);
 
                         xhr.onload = function(e) {

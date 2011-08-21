@@ -18,7 +18,7 @@ class uploader {
     const VERSION = "2.42-dev";
 
 /** Config session-overrided settings
-  * @var array  */
+  * @var array */
     protected $config = array();
 
 /** Opener applocation properties
@@ -35,7 +35,6 @@ class uploader {
 /** Helper property. Local filesystem path to the Type Directory
   * Equivalent: $config['uploadDir'] . "/" . $type
   * @var string */
-
     protected $typeDir;
 
 /** Helper property. Web URL to the Type Directory
