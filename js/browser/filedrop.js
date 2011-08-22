@@ -68,6 +68,7 @@
 
             var uploadQueue = [];
             var uploadInProgress = false;
+            var errors = [];
 
             function updateProgress(evt) {
                 var progress = evt.lengthComputable
@@ -128,6 +129,8 @@
                             browser.refresh();
                             uploadInProgress = false;
                             processUploadQueue();
+                            if (xhr.responseText.substr(0, 1) != "/")
+                                errors[errors.length] = xhr.responseText;
                         }
 
                         xhr.sendAsBinary(postbody);
@@ -144,8 +147,15 @@
 
                     reader.readAsBinaryString(file);
 
-                } else
+                } else {
                     filesCount = 0;
+                    var loop = setInterval(function() {
+                        if (uploadInProgress) return;
+                        clearInterval(loop);
+                        if (errors.length)
+                            browser.alert(errors.join('\n'));
+                    }, 500);
+                }
             }
         });
     }
