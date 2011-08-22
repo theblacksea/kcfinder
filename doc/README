@@ -1,4 +1,4 @@
-[===========================< KCFinder 2.42-dev >================================]
+[===========================< KCFinder 2.51-dev >================================]
 [                                                                            ]
 [                 Copyright 2010, 2011 KCFinder Project                      ]
 [                     http://kcfinder.sunhater.com                           ]
@@ -39,6 +39,8 @@ II. FEATURES
     10. Slideshow.
 
     11. Multiple files upload (ala Facebook)
+
+    12. Drag and drop uploading
 
 
 III. REQUIREMENTS

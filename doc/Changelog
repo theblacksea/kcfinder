@@ -27,7 +27,7 @@ VERSION 2.4 - 2010-07-20
 * New 'dark' theme added (made by Dark Preacher)
 * Additional 'theme' GET parameter to choose a theme from URL
 * Thumbnails loading improvement
-* Some changes in Oxygen CSS theme. It's currently the only one.
+* Some changes in Oxygen CSS theme
 * Replace alert() and confirm() JavaScript functions with good-looking boxes
 * Safari 3 right-click fix
 * Small bugfixes

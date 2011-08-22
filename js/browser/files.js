@@ -4,7 +4,7 @@
   *
   *      @desc File related functionality
   *   @package KCFinder
-  *   @version 2.42-dev
+  *   @version 2.51-dev
   *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
   * @copyright 2010, 2011 KCFinder Project
   *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
