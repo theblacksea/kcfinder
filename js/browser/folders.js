@@ -295,11 +295,11 @@ browser.menuDir = function(dir, e) {
                 errSlash: "Unallowable characters in folder name.",
                 errDot: "Folder name shouldn't begins with '.'"
             }, function(dt) {
-                var currentDir = (data.path == browser.dir);
                 if (!dt.name) {
                     browser.alert(browser.label("Unknown error."));
                     return;
                 }
+                var currentDir = (data.path == browser.dir);
                 dir.children('span.folder').html(_.htmlData(dt.name));
                 dir.data('name', dt.name);
                 dir.data('path', _.dirname(data.path) + '/' + dt.name);

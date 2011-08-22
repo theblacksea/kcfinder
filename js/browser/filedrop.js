@@ -5,7 +5,7 @@
   *      @desc Drag and drop files from desktop to KCFinder files pane
   *   @package KCFinder
   *   @version 2.42-dev
-  *    @author Forum user
+  *    @author Forum user (corrected by Pavel Tzonkov)
   * @copyright 2010, 2011 KCFinder Project
   *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
   *   @license http://www.opensource.org/licenses/lgpl-2.1.php LGPLv2
