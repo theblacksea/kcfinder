@@ -1,7 +1,9 @@
 !!! THINGS TO DO BEFORE ZIPPING NEW PACKAGES !!!
 
-* Change version numbers in all source files and in core/uploader.php VERSION
-  class constant
+* Change version numbers in all source files, doc/README and core/uploader.php
+  VERSION class constant
+
+* Edit doc/Changelog file
 
 * Delete .git directory
 

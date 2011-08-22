@@ -1,7 +1,14 @@
-
-VERSION 2.42 - 2010-08-
+VERSION 2.51 - 2010-09-
 -------------------------
+
+
+VERSION 2.5 - 2010-08-23
+------------------------
+* Drupal module support
+* Drag and drop uploading plugin
+* Two more language labels
 * Localhost cookies bugfix
+* Renaming current folder bugfix
 * Small bugfixes
 
 
