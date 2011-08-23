@@ -22,7 +22,6 @@
 
         $(document).ready(function() {
 
-            // NOT GECKO
             if (!XMLHttpRequest.prototype.sendAsBinary) {
                 XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
                     var ords = Array.prototype.map.call(datastr, function(x) {
@@ -33,19 +32,24 @@
                 }
             }
 
-            var droparea = $('#files').get(0);
-            var filesCount = 0;
+            var uploadQueue = [],
+                uploadInProgress = false,
+                filesCount = 0,
+                errors = [],
+                droparea = $('#files').get(0),
+                boundary = '------multipartdropuploadboundary' + (new Date).getTime();
 
-            // EVENT BINDING
             droparea.addEventListener('dragover', function(e) {
                 if (e.preventDefault) e.preventDefault();
                 $('#files').addClass('drag');
                 return false;
             }, false);
+
             droparea.addEventListener('dragenter', function(e) {
                 if (e.preventDefault) e.preventDefault();
                 return false;
             }, false);
+
             droparea.addEventListener('dragleave', function(e) {
                 if (e.preventDefault) e.preventDefault();
                 $('#files').removeClass('drag');
@@ -66,10 +70,6 @@
                 return false;
             }, false);
 
-            var uploadQueue = [];
-            var uploadInProgress = false;
-            var errors = [];
-
             function updateProgress(evt) {
                 var progress = evt.lengthComputable
                     ? Math.round((evt.loaded * 100) / evt.total) + "%"
@@ -80,8 +80,6 @@
                     progress: progress
                 }));
             }
-
-            var boundary = '------multipartdropuploadboundary' + (new Date).getTime();
 
             function processUploadQueue() {
                 if (uploadInProgress)
@@ -126,7 +124,8 @@
 
                         xhr.onload = function(e) {
                             $('#loading').css('display', 'none');
-                            browser.refresh();
+                            if (browser.dir == reader.thisTargetDir)
+                                browser.fadeFiles();
                             uploadInProgress = false;
                             processUploadQueue();
                             if (xhr.responseText.substr(0, 1) != "/")
@@ -140,9 +139,9 @@
                         $('#loading').css('display', 'none');
                         uploadInProgress = false;
                         processUploadQueue();
-                        alert(browser.label("Failed to upload {filename}!", {
+                        errors[errors.length] = browser.label("Failed to upload {filename}!", {
                             filename: evt.target.thisFileName
-                        }));
+                        });
                     };
 
                     reader.readAsBinaryString(file);
@@ -151,9 +150,13 @@
                     filesCount = 0;
                     var loop = setInterval(function() {
                         if (uploadInProgress) return;
+                        boundary = '------multipartdropuploadboundary' + (new Date).getTime();
+                        browser.refresh();
                         clearInterval(loop);
-                        if (errors.length)
+                        if (errors.length) {
                             browser.alert(errors.join('\n'));
+                            errors = [];
+                        }
                     }, 500);
                 }
             }
