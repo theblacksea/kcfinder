@@ -177,7 +177,11 @@ class uploader {
         }
 
         // COOKIES INIT
-        if (in_array(strtolower($_SERVER['HTTP_HOST']), array("localhost", "127.0.0.1")))
+        $ip = '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)';
+        $ip = '/^' . implode('\.', array($ip, $ip, $ip, $ip)) . '$/';
+        if (preg_match($ip, $_SERVER['HTTP_HOST']) ||
+            preg_match('/^[^\.]+$/', $_SERVER['HTTP_HOST'])
+        )
             $this->config['cookieDomain'] = "";
         elseif (!strlen($this->config['cookieDomain']))
             $this->config['cookieDomain'] = $_SERVER['HTTP_HOST'];
