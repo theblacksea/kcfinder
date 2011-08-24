@@ -154,7 +154,8 @@ span.regular {
 
 span.regular:hover, span.context {
     background-color: #ddebf8;
-    border-color: #cee0f4
+    border-color: #cee0f4;
+    color: #000;
 }
 
 span.opened {

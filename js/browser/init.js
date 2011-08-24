@@ -34,6 +34,7 @@ browser.init = function() {
     this.initContent();
     this.initToolbar();
     this.initResizer();
+    this.initDropUpload();
 };
 
 browser.checkAgent = function() {

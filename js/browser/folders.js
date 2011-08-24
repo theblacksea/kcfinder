@@ -145,8 +145,8 @@ browser.expandDir = function(dir) {
                             dir.children('.brace').removeClass('opened');
                             dir.children('.brace').removeClass('closed');
                         }
-
                         browser.initFolders();
+                        browser.initDropUpload();
                     },
                     error: function() {
                         $('#loadingDirs').detach();
@@ -275,6 +275,7 @@ browser.menuDir = function(dir, e) {
                 errDot: "Folder name shouldn't begins with '.'"
             }, function() {
                 browser.refreshDir(dir);
+                browser.initDropUpload();
                 if (!data.hasDirs) {
                     dir.data('hasDirs', true);
                     dir.children('span.brace').addClass('closed');
@@ -305,6 +306,7 @@ browser.menuDir = function(dir, e) {
                 dir.data('path', _.dirname(data.path) + '/' + dt.name);
                 if (currentDir)
                     browser.dir = dir.data('path');
+                browser.initDropUpload();
             },
             true
         );
@@ -339,6 +341,7 @@ browser.menuDir = function(dir, e) {
                             }
                             if (pDir.data('path') == browser.dir.substr(0, pDir.data('path').length))
                                 browser.changeDir(pDir);
+                            browser.initDropUpload();
                         });
                     },
                     error: function() {
