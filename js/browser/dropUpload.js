@@ -59,6 +59,10 @@ browser.initDropUpload = function() {
         if (e.preventDefault) e.preventDefault();
         if (e.stopPropagation) e.stopPropagation();
         $('#files').removeClass('drag');
+        if (!$('#folders span.current').first().parent().data('writable')) {
+            browser.alert("Cannot write to upload folder.");
+            return false;
+        }
         filesCount += e.dataTransfer.files.length
         for (var i = 0; i < e.dataTransfer.files.length; i++) {
             var file = e.dataTransfer.files[i];
@@ -77,10 +81,14 @@ browser.initDropUpload = function() {
     folderDrop = function(e, dir) {
         if (e.preventDefault) e.preventDefault();
         if (e.stopPropagation) e.stopPropagation();
+        if (!$(dir).data('writable')) {
+            browser.alert("Cannot write to upload folder.");
+            return false;
+        }
         filesCount += e.dataTransfer.files.length
         for (var i = 0; i < e.dataTransfer.files.length; i++) {
             var file = e.dataTransfer.files[i];
-            file.thisTargetDir = dir;
+            file.thisTargetDir = $(dir).data('path');
             uploadQueue.push(file);
         }
         processUploadQueue();
@@ -98,7 +106,6 @@ browser.initDropUpload = function() {
     files.get(0).addEventListener('drop', filesDrop, false);
 
     folders.each(function() {
-
         var folder = this,
 
         dragOver = function(e) {
@@ -113,7 +120,7 @@ browser.initDropUpload = function() {
 
         drop = function(e) {
             $(folder).children('span.folder').removeClass('context');
-            return folderDrop(e, $(folder).data('path'));
+            return folderDrop(e, folder);
         };
 
         this.removeEventListener('dragover', dragOver, false);
