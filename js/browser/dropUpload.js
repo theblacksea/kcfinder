@@ -37,6 +37,7 @@ browser.initDropUpload = function() {
         files = $('#files'),
         folders = $('div.folder > a'),
         boundary = '------multipartdropuploadboundary' + (new Date).getTime(),
+        currentFile,
 
     filesDragOver = function(e) {
         if (e.preventDefault) e.preventDefault();
@@ -151,6 +152,7 @@ browser.initDropUpload = function() {
 
         if (uploadQueue && uploadQueue.length) {
             var file = uploadQueue.shift();
+            currentFile = file;
             $('#loading').html(browser.label("Uploading file {number} of {count}... {progress}", {
                 number: filesCount - uploadQueue.length,
                 count: filesCount,
@@ -215,13 +217,14 @@ browser.initDropUpload = function() {
             var loop = setInterval(function() {
                 if (uploadInProgress) return;
                 clearInterval(loop);
-                browser.refresh();
+                if (currentFile.thisTargetDir == browser.dir)
+                    browser.refresh();
                 boundary = '------multipartdropuploadboundary' + (new Date).getTime();
                 if (errors.length) {
                     browser.alert(errors.join('\n'));
                     errors = [];
                 }
-            }, 500);
+            }, 333);
         }
     }
 };
