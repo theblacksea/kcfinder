@@ -4,7 +4,7 @@
   *
   *      @desc Upload files using drag and drop
   *   @package KCFinder
-  *   @version 2.51-dev
+  *   @version 2.52-dev
   *    @author Forum user (updated by Pavel Tzonkov)
   * @copyright 2010, 2011 KCFinder Project
   *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2

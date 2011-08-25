@@ -1,5 +1,9 @@
-VERSION 2.51 - 2010-09-
+
+VERSION 2.51 - 2010-08-25
 -------------------------
+* Drag and drop uploading plugin - big fixes
+* Cookies problem when using single words or IPs as hostname resolved
+* Vietnamese localization
 
 
 VERSION 2.5 - 2010-08-23
