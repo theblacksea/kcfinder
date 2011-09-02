@@ -216,6 +216,7 @@ browser.initDropUpload = function() {
             filesCount = 0;
             var loop = setInterval(function() {
                 if (uploadInProgress) return;
+                uploadQueue = [];
                 clearInterval(loop);
                 if (currentFile.thisTargetDir == browser.dir)
                     browser.refresh();
