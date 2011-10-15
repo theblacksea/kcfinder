@@ -75,6 +75,8 @@ $_CONFIG = array(
 
     'mime_magic' => "",
 
+    'imageDriversPriority' => array('imagick', 'gd'),
+
     'maxImageWidth' => 0,
     'maxImageHeight' => 0,
 

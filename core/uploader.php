@@ -21,6 +21,10 @@ class uploader {
   * @var array */
     protected $config = array();
 
+/** Image driver
+  * @var string */
+    protected $imageDriver = "gd";
+
 /** Opener applocation properties
   *   $opener['name']                 Got from $_GET['opener'];
   *   $opener['CKEditor']['funcNum']  CKEditor function number (got from $_GET)
@@ -156,6 +160,13 @@ class uploader {
             $this->session = &$this->config['_sessionVar']['self'];
         } else
             $this->session = &$_SESSION;
+
+        // IMAGE DRIVER INIT
+        if (isset($this->config['imageDriversPriority'])) {
+            $driver = image::getDriver($this->config['imageDriversPriority']);
+            if ($driver !== false)
+                $this->imageDriver = $driver;
+        }
 
         // GET TYPE DIRECTORY
         $this->types = &$this->config['types'];
@@ -421,9 +432,13 @@ class uploader {
         }
 
         // IMAGE RESIZE
-        $gd = new gd($file['tmp_name']);
-        if (!$gd->init_error && !$this->imageResize($gd, $file['tmp_name']))
+        $img = image::factory($this->imageDriver, $file['tmp_name']);
+        if (!$img->initError && !$this->imageResize($img, $file['tmp_name']))
             return $this->label("The image is too big and/or cannot be resized.");
+
+        /*$gd = new gd($file['tmp_name']);
+        if (!$gd->init_error && !$this->imageResize($gd, $file['tmp_name']))
+            return $this->label("The image is too big and/or cannot be resized.");*/
 
         return true;
     }
@@ -490,51 +505,52 @@ class uploader {
     }
 
     protected function imageResize($image, $file=null) {
-        if (!($image instanceof gd)) {
-            $gd = new gd($image);
+        if (!($image instanceof image)) {
+            $img = image::factory($this->imageDriver, $image);
             if ($gd->init_error) return false;
             $file = $image;
         } elseif ($file === null)
             return false;
         else
-            $gd = $image;
+            $img = $image;
 
         if ((!$this->config['maxImageWidth'] && !$this->config['maxImageHeight']) ||
             (
-                ($gd->get_width() <= $this->config['maxImageWidth']) &&
-                ($gd->get_height() <= $this->config['maxImageHeight'])
+                ($img->width <= $this->config['maxImageWidth']) &&
+                ($img->height <= $this->config['maxImageHeight'])
             )
         )
             return true;
 
         if ((!$this->config['maxImageWidth'] || !$this->config['maxImageHeight'])) {
             if ($this->config['maxImageWidth']) {
-                if ($this->config['maxImageWidth'] >= $gd->get_width())
+                if ($this->config['maxImageWidth'] >= $img->width)
                     return true;
                 $width = $this->config['maxImageWidth'];
-                $height = $gd->get_prop_height($width);
+                $height = $img->getPropHeight($width);
             } else {
-                if ($this->config['maxImageHeight'] >= $gd->get_height())
+                if ($this->config['maxImageHeight'] >= $img->height)
                     return true;
                 $height = $this->config['maxImageHeight'];
-                $width = $gd->get_prop_width($height);
+                $width = $img->getPropWidth($height);
             }
-            if (!$gd->resize($width, $height))
+            if (!$img->resize($width, $height))
                 return false;
 
-        } elseif (!$gd->resize_fit(
-            $this->config['maxImageWidth'], $this->config['maxImageHeight']
-        ))
+        } elseif (!$img->resizeFit($this->config['maxImageWidth'], $this->config['maxImageHeight']))
             return false;
 
-        return $gd->imagejpeg($file, $this->config['jpegQuality']);
+        return $img->output("jpeg", array(
+            'file' => $file,
+            'quality' => $this->config['jpegQuality']
+        ));
     }
 
     protected function makeThumb($file, $overwrite=true) {
-        $gd = new gd($file);
+        $img = image::factory($this->imageDriver, $file);
 
-        // Drop files which are not GD handled images
-        if ($gd->init_error)
+        // Drop files which are not images
+        if ($img->initError)
             return true;
 
         $thumb = substr($file, strlen($this->config['uploadDir']));
@@ -548,20 +564,23 @@ class uploader {
             return true;
 
         // Images with smaller resolutions than thumbnails
-        if (($gd->get_width() <= $this->config['thumbWidth']) &&
-            ($gd->get_height() <= $this->config['thumbHeight'])
+        if (($img->width <= $this->config['thumbWidth']) &&
+            ($img->height <= $this->config['thumbHeight'])
         ) {
-            $browsable = array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG);
+            list($tmp, $tmp, $type) = @getimagesize($file);
             // Drop only browsable types
-            if (in_array($gd->type, $browsable))
+            if (in_array($type, array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG)))
                 return true;
 
         // Resize image
-        } elseif (!$gd->resize_fit($this->config['thumbWidth'], $this->config['thumbHeight']))
+        } elseif (!$img->resizeFit($this->config['thumbWidth'], $this->config['thumbHeight']))
             return false;
 
         // Save thumbnail
-        return $gd->imagejpeg($thumb, $this->config['jpegQuality']);
+        return $img->output("jpeg", array(
+            'file' => $thumb,
+            'quality' => $this->config['jpegQuality']
+        ));
     }
 
     protected function localize($langCode) {

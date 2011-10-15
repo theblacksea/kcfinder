@@ -151,19 +151,19 @@ class browser extends uploader {
             $file = "{$this->config['uploadDir']}/{$this->type}/{$this->get['dir']}/" . basename($file);
             if (!is_file($file) || !is_readable($file))
                 $this->sendDefaultThumb($file);
-            $image = new gd($file);
-            if ($image->init_error)
+            $image = image::factory($this->imageDriver, $file);
+            if ($image->initError)
                 $this->sendDefaultThumb($file);
-            $browsable = array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG);
-            if (in_array($image->type, $browsable) &&
-                ($image->get_width() <= $this->config['thumbWidth']) &&
-                ($image->get_height() <= $this->config['thumbHeight'])
+            list($tmp, $tmp, $type) = getimagesize($file);
+            if (in_array($type, array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG)) &&
+                ($image->width <= $this->config['thumbWidth']) &&
+                ($image->height <= $this->config['thumbHeight'])
             ) {
-                $type =
-                    ($image->type == IMAGETYPE_GIF) ? "gif" : (
-                    ($image->type == IMAGETYPE_PNG) ? "png" : "jpeg");
-                $type = "image/$type";
-                httpCache::file($file, $type);
+                $mime =
+                    ($type == IMAGETYPE_GIF) ? "gif" : (
+                    ($type == IMAGETYPE_PNG) ? "png" : "jpeg");
+                $mime = "image/$mime";
+                httpCache::file($file, $mime);
             } else
                 $this->sendDefaultThumb($file);
         }
