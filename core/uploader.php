@@ -163,10 +163,16 @@ class uploader {
 
         // IMAGE DRIVER INIT
         if (isset($this->config['imageDriversPriority'])) {
-            $driver = image::getDriver($this->config['imageDriversPriority']);
+            $this->config['imageDriversPriority'] =
+                text::clearWhitespaces($this->config['imageDriversPriority']);
+            $driver = image::getDriver(explode(' ', $this->config['imageDriversPriority']));
             if ($driver !== false)
                 $this->imageDriver = $driver;
         }
+
+        // WATERMARK INIT
+        if (isset($this->config['watermark']) && is_string($this->config['watermark']))
+            $this->config['watermark'] = array('file' => $this->config['watermark']);
 
         // GET TYPE DIRECTORY
         $this->types = &$this->config['types'];
@@ -436,10 +442,6 @@ class uploader {
         if (!$img->initError && !$this->imageResize($img, $file['tmp_name']))
             return $this->label("The image is too big and/or cannot be resized.");
 
-        /*$gd = new gd($file['tmp_name']);
-        if (!$gd->init_error && !$this->imageResize($gd, $file['tmp_name']))
-            return $this->label("The image is too big and/or cannot be resized.");*/
-
         return true;
     }
 
@@ -505,41 +507,72 @@ class uploader {
     }
 
     protected function imageResize($image, $file=null) {
+
         if (!($image instanceof image)) {
             $img = image::factory($this->imageDriver, $image);
-            if ($gd->init_error) return false;
+            if ($img->initError) return false;
             $file = $image;
         } elseif ($file === null)
             return false;
         else
             $img = $image;
 
-        if ((!$this->config['maxImageWidth'] && !$this->config['maxImageHeight']) ||
-            (
-                ($img->width <= $this->config['maxImageWidth']) &&
-                ($img->height <= $this->config['maxImageHeight'])
+        // IMAGE WILL NOT BE RESIZED WHEN NO WATERMARK AND SIZE IS ACCEPTABLE
+        if ((
+                !isset($this->config['watermark']['file']) ||
+                (!strlen(trim($this->config['watermark']['file'])))
+            ) && (
+                (
+                    !$this->config['maxImageWidth'] &&
+                    !$this->config['maxImageHeight']
+                ) || (
+                    ($img->width <= $this->config['maxImageWidth']) &&
+                    ($img->height <= $this->config['maxImageHeight'])
+                )
             )
         )
             return true;
 
+
+        // PROPORTIONAL RESIZE
         if ((!$this->config['maxImageWidth'] || !$this->config['maxImageHeight'])) {
-            if ($this->config['maxImageWidth']) {
-                if ($this->config['maxImageWidth'] >= $img->width)
-                    return true;
+
+            if ($this->config['maxImageWidth'] &&
+                ($this->config['maxImageWidth'] < $img->width)
+            ) {
                 $width = $this->config['maxImageWidth'];
                 $height = $img->getPropHeight($width);
-            } else {
-                if ($this->config['maxImageHeight'] >= $img->height)
-                    return true;
+
+            } elseif (
+                $this->config['maxImageHeight'] &&
+                ($this->config['maxImageHeight'] < $img->height)
+            ) {
                 $height = $this->config['maxImageHeight'];
                 $width = $img->getPropWidth($height);
             }
-            if (!$img->resize($width, $height))
+
+            if (isset($width) && isset($height) && !$img->resize($width, $height))
                 return false;
 
-        } elseif (!$img->resizeFit($this->config['maxImageWidth'], $this->config['maxImageHeight']))
+        // RESIZE TO FIT
+        } elseif (
+            $this->config['maxImageWidth'] && $this->config['maxImageHeight'] &&
+            !$img->resizeFit($this->config['maxImageWidth'], $this->config['maxImageHeight'])
+        )
             return false;
 
+        // WATERMARK
+        if (isset($this->config['watermark']['file']) &&
+            is_file($this->config['watermark']['file'])
+        ) {
+            $left = isset($this->config['watermark']['left'])
+                ? $this->config['watermark']['left'] : false;
+            $top = isset($this->config['watermark']['top'])
+                ? $this->config['watermark']['top'] : false;
+            $img->watermark($this->config['watermark']['file'], $left, $top);
+        }
+
+        // WRITE TO FILE
         return $img->output("jpeg", array(
             'file' => $file,
             'quality' => $this->config['jpegQuality']

@@ -105,13 +105,38 @@ class image_imagick extends image {
         return true;
     }
 
-    public function watermark($file, $top=false, $left=false) {
-        $wm = new Imagick($file);
+    public function rotate($angle) {
+        $return = $this->image->rotateImage(new ImagickPixel(), $angle);
+        if ($return === false)
+            return false;
+        $size = $this->image->getImageGeometry();
+        $this->width = $size['width'];
+        $this->height = $size['height'];
+        return true;
+    }
+
+    public function watermark($file, $left=false, $top=false) {
+        try {
+            $wm = new Imagick($file);
+        } catch (Exception $e) {
+            return false;
+        }
+
         $size = $wm->getImageGeometry();
         $w = $size['width'];
         $h = $size['height'];
-        $x = $left ? 0 : ($this->width - $w);
-        $y = $top ? 0 : ($this->height - $h);
+        $x =
+            ($left === true) ? 0 : (
+            ($left === null) ? round(($this->width - $w) / 2) : (
+            (($left === false) || !preg_match('/^\d+$/', $left)) ? ($this->width - $w) : $left));
+        $y =
+            ($top === true) ? 0 : (
+            ($top === null) ? round(($this->height - $h) / 2) : (
+            (($top === false) || !preg_match('/^\d+$/', $top)) ? ($this->height - $h) : $top));
+
+        if ((($x + $w) > $this->width) || (($y + $h) > $this->height))
+            return false;
+
         return (
             $this->image->compositeImage($wm, Imagick::COMPOSITE_DEFAULT, $x, $y)
         );

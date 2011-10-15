@@ -117,16 +117,41 @@ class image_gd extends image {
         return $return;
     }
 
-    public function watermark($file, $top=false, $left=false) {
+    public function rotate($angle) {
+        $img = @imagerotate($this->image, $angle, $this->gdColor("#000000"));
+        if ($img === false)
+            return false;
+        $this->width = imagesx($img);
+        $this->height = imagesy($img);
+        $this->image = $img;
+        return true;
+    }
+
+    public function watermark($file, $left=false, $top=false) {
+        $info = getimagesize($file);
+        list($w, $h, $t) = $info;
+        if (!in_array($t, array(IMAGETYPE_PNG, IMAGETYPE_GIF)))
+            return false;
+        $imagecreate = ($t == IMAGETYPE_PNG) ? "imagecreatefrompng" : "imagecreatefromgif";
+
         if (!@imagealphablending($this->image, true) ||
-            (false === ($wm = @imagecreatefrompng($file)))
+            (false === ($wm = @$imagecreate($file)))
         )
             return false;
 
         $w = imagesx($wm);
         $h = imagesy($wm);
-        $x = $left ? 0 : ($this->width - $w);
-        $y = $top ? 0 : ($this->height - $h);
+        $x =
+            ($left === true) ? 0 : (
+            ($left === null) ? round(($this->width - $w) / 2) : (
+            (($left === false) || !preg_match('/^\d+$/', $left)) ? ($this->width - $w) : $left));
+        $y =
+            ($top === true) ? 0 : (
+            ($top === null) ? round(($this->height - $h) / 2) : (
+            (($top === false) || !preg_match('/^\d+$/', $top)) ? ($this->height - $h) : $top));
+
+        if ((($x + $w) > $this->width) || (($y + $h) > $this->height))
+            return false;
 
         if (($wm === false) || !@imagecopy($this->image, $wm, $x, $y, 0, 0, $w, $h))
             return false;

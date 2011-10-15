@@ -18,15 +18,57 @@
 
 $_CONFIG = array(
 
+
+// GENERAL SETTINGS
+
     'disabled' => false,
+    'theme' => "oxygen",
+    'uploadURL' => "/upload",
+    'uploadDir' => "",
+
+    'types' => array(
+
+    // (F)CKEditor types
+        'files'   =>  "",
+        'flash'   =>  "swf",
+        'images'  =>  "*img",
+
+    // TinyMCE types
+        'file'    =>  "",
+        'media'   =>  "swf flv avi mpg mpeg qt mov wmv asf rm",
+        'image'   =>  "*img",
+    ),
+
+
+// IMAGE SETTINGS
+
+    'imageDriversPriority' => "imagick gd",
+
+    'watermark' => "test/test.png", /*array(
+        'file' => "test/test.png",
+        'top' => false,
+        'left' => false,
+    ),*/
+
+    'maxImageWidth' => 0,
+    'maxImageHeight' => 0,
+
+    'thumbWidth' => 100,
+    'thumbHeight' => 100,
+
+    'thumbsDir' => ".thumbs",
+
+    'jpegQuality' => 90,
+
+
+// DISABLE / ENABLE SETTINGS
+
     'denyZipDownload' => false,
     'denyUpdateCheck' => false,
     'denyExtensionRename' => false,
 
-    'theme' => "oxygen",
 
-    'uploadURL' => "/upload",
-    'uploadDir' => "",
+// PERMISSION SETTINGS
 
     'dirPerms' => 0755,
     'filePerms' => 0644,
@@ -50,18 +92,8 @@ $_CONFIG = array(
 
     'deniedExts' => "exe com msi bat php phps phtml php3 php4 cgi pl",
 
-    'types' => array(
 
-        // CKEditor & FCKEditor types
-        'files'   =>  "",
-        'flash'   =>  "swf",
-        'images'  =>  "*img",
-
-        // TinyMCE types
-        'file'    =>  "",
-        'media'   =>  "swf flv avi mpg mpeg qt mov wmv asf rm",
-        'image'   =>  "*img",
-    ),
+// MISC SETTINGS
 
     'filenameChangeChars' => array(/*
         ' ' => "_",
@@ -74,18 +106,6 @@ $_CONFIG = array(
     */),
 
     'mime_magic' => "",
-
-    'imageDriversPriority' => array('imagick', 'gd'),
-
-    'maxImageWidth' => 0,
-    'maxImageHeight' => 0,
-
-    'thumbWidth' => 100,
-    'thumbHeight' => 100,
-
-    'thumbsDir' => ".thumbs",
-
-    'jpegQuality' => 90,
 
     'cookieDomain' => "",
     'cookiePath' => "",

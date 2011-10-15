@@ -177,21 +177,29 @@ abstract class image {
   * @return bool */
     abstract public function resizeFit($width, $height, $background=false);
 
-/** Resize and crop the image to fit in given resolution. Returns TRUE on success
-  * or FALSE on failure
+/** Resize and crop the image to fit in given resolution. Returns TRUE on
+  * success or FALSE on failure
   * @param mixed $src
   * @param integer $offset
   * @return bool */
     abstract public function resizeCrop($width, $height, $offset=false);
 
-/** Apply a PNG watermark to the image. $top and $left marks which corner of
-  * the image watermark will appear. If the watermark is bigger than the image
-  * it shoudn't applies to the image
+
+/** Rotate image
+  * @param integer $angle */
+    abstract public function rotate($angle);
+
+/** Apply a PNG or GIF watermark to the image. $top and $left parameters sets
+  * the offset of the watermark in pixels. Boolean and NULL values are possible
+  * too. In default case (FALSE, FALSE) the watermark should be applyed to
+  * the bottom right corner. NULL values means center aligning. If the
+  * watermark is bigger than the image or it's partialy or fully outside the
+  * image, it shoudn't be applied
   * @param string $file
-  * @param bool $top
-  * @param bool $left
+  * @param mixed $top
+  * @param mixed $left
   * @return bool */
-    abstract public function watermark($file, $top=false, $left=false);
+    abstract public function watermark($file, $left=false, $top=false);
 
 /** Should output the image. Second parameter is used to pass some options like
   *   'file' - if is set, the output will be written to a file
