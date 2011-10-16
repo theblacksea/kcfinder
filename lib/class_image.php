@@ -186,8 +186,14 @@ abstract class image {
 
 
 /** Rotate image
-  * @param integer $angle */
-    abstract public function rotate($angle);
+  * @param integer $angle
+  * @param string $background
+  * @return bool */
+    abstract public function rotate($angle, $background="#000000");
+
+    abstract public function flipHorizontal();
+
+    abstract public function flipVertical();
 
 /** Apply a PNG or GIF watermark to the image. $top and $left parameters sets
   * the offset of the watermark in pixels. Boolean and NULL values are possible

@@ -42,7 +42,7 @@ $_CONFIG = array(
 
 // IMAGE SETTINGS
 
-    'imageDriversPriority' => "imagick gd",
+    'imageDriversPriority' => "gmagick imagick gd",
 
     'watermark' => "test/test.png", /*array(
         'file' => "test/test.png",

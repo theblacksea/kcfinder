@@ -2,7 +2,7 @@
 
 /** This file is part of KCFinder project
   *
-  *      @desc ImageMagick image driver class
+  *      @desc GraphicsMagick image driver class
   *   @package KCFinder
   *   @version 2.52-dev
   *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
@@ -12,7 +12,7 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-class image_imagick extends image {
+class image_gmagick extends image {
 
     static $MIMES = array(
         //'tif' => "image/tiff"
@@ -40,25 +40,29 @@ class image_imagick extends image {
 
         try {
             $this->image->scaleImage($width, $height, true);
-            $size = $this->image->getImageGeometry();
+            $w = $this->image->getImageWidth();
+            $h = $this->image->getImageHeight();
         } catch (Exception $e) {
             return false;
         }
 
         if ($background === false) {
-            $this->width = $size['width'];
-            $this->height = $size['height'];
+            $this->width = $w;
+            $this->height = $h;
             return true;
 
         } else {
             try {
                 $this->image->setImageBackgroundColor($background);
-                $x = -round(($width - $size['width']) / 2);
-                $y = -round(($height - $size['height']) / 2);
-                $this->image->extentImage($width, $height, $x, $y);
+                $x = round(($width - $w) / 2);
+                $y = round(($height - $h) / 2);
+                $img = new Gmagick();
+                $img->newImage($width, $height, $background);
+                $img->compositeImage($this->image, 1, $x, $y);
             } catch (Exception $e) {
                 return false;
             }
+            $this->image = $img;
             $this->width = $width;
             $this->height = $height;
             return true;
@@ -117,13 +121,14 @@ class image_imagick extends image {
 
     public function rotate($angle, $background="#000000") {
         try {
-            $this->image->rotateImage(new ImagickPixel($background), $angle);
-            $size = $this->image->getImageGeometry();
+            $this->image->rotateImage($background, $angle);
+            $w = $this->image->getImageWidth();
+            $h = $this->image->getImageHeight();
         } catch (Exception $e) {
             return false;
         }
-        $this->width = $size['width'];
-        $this->height = $size['height'];
+        $this->width = $w;
+        $this->height = $h;
         return true;
     }
 
@@ -147,14 +152,13 @@ class image_imagick extends image {
 
     public function watermark($file, $left=false, $top=false) {
         try {
-            $wm = new Imagick($file);
-            $size = $wm->getImageGeometry();
+            $wm = new Gmagick($file);
+            $w = $wm->getImageWidth();
+            $h = $wm->getImageHeight();
         } catch (Exception $e) {
             return false;
         }
 
-        $w = $size['width'];
-        $h = $size['height'];
         $x =
             ($left === true) ? 0 : (
             ($left === null) ? round(($this->width - $w) / 2) : (
@@ -171,7 +175,7 @@ class image_imagick extends image {
             return false;
 
         try {
-            $this->image->compositeImage($wm, Imagick::COMPOSITE_DEFAULT, $x, $y);
+            $this->image->compositeImage($wm, 1, $x, $y);
         } catch (Exception $e) {
             return false;
         }
@@ -183,9 +187,8 @@ class image_imagick extends image {
 
     protected function getBlankImage($width, $height) {
         try {
-            $img = new Imagick();
+            $img = new Gmagick();
             $img->newImage($width, $height, "none");
-            $img->setImageCompressionQuality(100);
         } catch (Exception $e) {
             return false;
         }
@@ -194,37 +197,32 @@ class image_imagick extends image {
 
     protected function getImage($image, &$width, &$height) {
 
-        if (is_object($image) && ($image instanceof image_imagick)) {
-            try {
-                $image->image->setImageCompressionQuality(100);
-            } catch (Exception $e) {
-                return false;
-            }
+        if (is_object($image) && ($image instanceof image_gmagick)) {
             $width = $image->width;
             $height = $image->height;
             return $image->image;
 
-        } elseif (is_object($image) && ($image instanceof Imagick)) {
+        } elseif (is_object($image) && ($image instanceof Gmagick)) {
             try {
-                $image->setImageCompressionQuality(100);
-                $size = $image->getImageGeometry();
+                $w = $image->getImageWidth();
+                $h = $image->getImageHeight();
             } catch (Exception $e) {
                 return false;
             }
-            $width = $size['width'];
-            $height = $size['height'];
+            $width = $w;
+            $height = $h;
             return $image;
 
         } elseif (is_string($image)) {
             try {
-                $image = new Imagick($image);
-                $image->setImageCompressionQuality(100);
-                $size = $image->getImageGeometry();
+                $image = new Gmagick($image);
+                $w = $image->getImageWidth();
+                $h = $image->getImageHeight();
             } catch (Exception $e) {
                 return false;
             }
-            $width = $size['width'];
-            $height = $size['height'];
+            $width = $w;
+            $height = $h;
             return $image;
 
         } else
@@ -235,12 +233,12 @@ class image_imagick extends image {
     // PSEUDO-ABSTRACT STATIC METHODS
 
     static function available() {
-        return class_exists("Imagick");
+        return class_exists("Gmagick");
     }
 
     static function checkImage($file) {
         try {
-            $img = new Imagic($file);
+            $img = new Gmagic($file);
         } catch (Exception $e) {
             return false;
         }
@@ -292,8 +290,7 @@ class image_imagick extends image {
     protected function optimize_jpeg(array $options=array()) {
         $quality = isset($options['quality']) ? $options['quality'] : self::DEFAULT_JPEG_QUALITY;
         try {
-            $this->image->setImageCompression(Imagick::COMPRESSION_JPEG);
-            $this->image->setImageCompressionQuality($quality);
+            $this->image->setCompressionQuality($quality);
         } catch (Exception $e) {
             return false;
         }

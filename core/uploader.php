@@ -52,7 +52,7 @@ class uploader {
 
 /** Settings which can override default settings if exists as keys in $config['types'][$type] array
   * @var array */
-    protected $typeSettings = array('disabled', 'theme', 'dirPerms', 'filePerms', 'denyZipDownload', 'maxImageWidth', 'maxImageHeight', 'thumbWidth', 'thumbHeight', 'jpegQuality', 'access', 'filenameChangeChars', 'dirnameChangeChars', 'denyExtensionRename', 'deniedExts');
+    protected $typeSettings = array('disabled', 'theme', 'dirPerms', 'filePerms', 'denyZipDownload', 'maxImageWidth', 'maxImageHeight', 'thumbWidth', 'thumbHeight', 'jpegQuality', 'access', 'filenameChangeChars', 'dirnameChangeChars', 'denyExtensionRename', 'deniedExts', 'watermark');
 
 /** Got from language file
   * @var string */
@@ -517,6 +517,12 @@ class uploader {
         else
             $img = $image;
 
+        $orientation = 1;
+        if (function_exists("exif_read_data")) {
+            $orientation = @exif_read_data($file);
+            $orientation = isset($orientation['Orientation']) ? $orientation['Orientation'] : 1;
+        }
+
         // IMAGE WILL NOT BE RESIZED WHEN NO WATERMARK AND SIZE IS ACCEPTABLE
         if ((
                 !isset($this->config['watermark']['file']) ||
@@ -529,7 +535,8 @@ class uploader {
                     ($img->width <= $this->config['maxImageWidth']) &&
                     ($img->height <= $this->config['maxImageHeight'])
                 )
-            )
+            ) &&
+            ($orientation == 1)
         )
             return true;
 
@@ -558,6 +565,17 @@ class uploader {
         } elseif (
             $this->config['maxImageWidth'] && $this->config['maxImageHeight'] &&
             !$img->resizeFit($this->config['maxImageWidth'], $this->config['maxImageHeight'])
+        )
+            return false;
+
+        // AUTO FLIP AND ROTATE FROM EXIF
+        if ((($orientation == 2) && !$img->flipHorizontal()) ||
+            (($orientation == 3) && !$img->rotate(180)) ||
+            (($orientation == 4) && !$img->flipVertical()) ||
+            (($orientation == 5) && (!$img->flipVertical() || !$img->rotate(90))) ||
+            (($orientation == 6) && !$img->rotate(90)) ||
+            (($orientation == 7) && (!$img->flipHorizontal() || !$img->rotate(90))) ||
+            (($orientation == 8) && !$img->rotate(270))
         )
             return false;
 

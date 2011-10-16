@@ -117,13 +117,32 @@ class image_gd extends image {
         return $return;
     }
 
-    public function rotate($angle) {
-        $img = @imagerotate($this->image, $angle, $this->gdColor("#000000"));
+    public function rotate($angle, $background="#000000") {
+        $angle = -$angle;
+        $img = @imagerotate($this->image, $angle, $this->gdColor($background));
         if ($img === false)
             return false;
         $this->width = imagesx($img);
         $this->height = imagesy($img);
         $this->image = $img;
+        return true;
+    }
+
+    public function flipHorizontal() {
+        $img = imagecreatetruecolor($this->width, $this->height);
+        if (imagecopyresampled($img, $this->image, 0, 0, ($this->width - 1), 0, $this->width, $this->height, -$this->width, $this->height))
+            $this->image = $img;
+        else
+            return false;
+        return true;
+    }
+
+    public function flipVertical() {
+        $img = imagecreatetruecolor($this->width, $this->height);
+        if (imagecopyresampled($img, $this->image, 0, 0, 0, ($this->height - 1), $this->width, $this->height, $this->width, -$this->height))
+            $this->image = $img;
+        else
+            return false;
         return true;
     }
 
@@ -150,7 +169,10 @@ class image_gd extends image {
             ($top === null) ? round(($this->height - $h) / 2) : (
             (($top === false) || !preg_match('/^\d+$/', $top)) ? ($this->height - $h) : $top));
 
-        if ((($x + $w) > $this->width) || (($y + $h) > $this->height))
+        if ((($x + $w) > $this->width) ||
+            (($y + $h) > $this->height) ||
+            ($x < 0) || ($y < 0)
+        )
             return false;
 
         if (($wm === false) || !@imagecopy($this->image, $wm, $x, $y, 0, 0, $w, $h))
