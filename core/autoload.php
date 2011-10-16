@@ -26,11 +26,6 @@ if (substr(PHP_VERSION, 0, strpos(PHP_VERSION, '.')) < 5)
     die("You are using PHP " . PHP_VERSION . " when KCFinder require at least version 5! Some systems has an option to change the active PHP version. Please refer to your hosting provider or upgrade your PHP distribution.");
 
 
-// GD EXTENSION CHECK
-if (!function_exists("imagecopyresampled"))
-    die("The GD PHP extension is not available! It's required to run KCFinder.");
-
-
 // SAFE MODE CHECK
 if (ini_get("safe_mode"))
     die("The \"safe_mode\" PHP ini setting is turned on! You cannot run KCFinder in safe mode.");

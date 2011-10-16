@@ -43,12 +43,8 @@ $_CONFIG = array(
 // IMAGE SETTINGS
 
     'imageDriversPriority' => "gmagick imagick gd",
-
-    'watermark' => "test/test.png", /*array(
-        'file' => "test/test.png",
-        'top' => false,
-        'left' => false,
-    ),*/
+    'jpegQuality' => 90,
+    'thumbsDir' => ".thumbs",
 
     'maxImageWidth' => 0,
     'maxImageHeight' => 0,
@@ -56,9 +52,7 @@ $_CONFIG = array(
     'thumbWidth' => 100,
     'thumbHeight' => 100,
 
-    'thumbsDir' => ".thumbs",
-
-    'jpegQuality' => 90,
+    'watermark' => "",
 
 
 // DISABLE / ENABLE SETTINGS
@@ -111,7 +105,9 @@ $_CONFIG = array(
     'cookiePath' => "",
     'cookiePrefix' => 'KCFINDER_',
 
-    // THE FOLLOWING SETTINGS CANNOT BE OVERRIDED WITH SESSION CONFIGURATION
+
+// THE FOLLOWING SETTINGS CANNOT BE OVERRIDED WITH SESSION CONFIGURATION
+
     '_check4htaccess' => true,
     //'_tinyMCEPath' => "/tiny_mce",
 

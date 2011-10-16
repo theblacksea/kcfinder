@@ -21,7 +21,7 @@ class uploader {
   * @var array */
     protected $config = array();
 
-/** Image driver
+/** Default image driver
   * @var string */
     protected $imageDriver = "gd";
 
@@ -169,6 +169,10 @@ class uploader {
             if ($driver !== false)
                 $this->imageDriver = $driver;
         }
+        if ((!isset($driver) || ($driver === false)) &&
+            (image::getDriver(array($this->imageDriver)) === false)
+        )
+            die("Cannot find any of the supported PHP image extensions!");
 
         // WATERMARK INIT
         if (isset($this->config['watermark']) && is_string($this->config['watermark']))
