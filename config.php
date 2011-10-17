@@ -42,7 +42,7 @@ $_CONFIG = array(
 
 // IMAGE SETTINGS
 
-    'imageDriversPriority' => "gmagick imagick gd",
+    'imageDriversPriority' => "imagick gmagick gd",
     'jpegQuality' => 90,
     'thumbsDir' => ".thumbs",
 
@@ -72,8 +72,8 @@ $_CONFIG = array(
         'files' => array(
             'upload' => true,
             'delete' => true,
-            'copy' => true,
-            'move' => true,
+            'copy'   => true,
+            'move'   => true,
             'rename' => true
         ),
 
