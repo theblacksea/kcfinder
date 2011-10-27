@@ -12,7 +12,7 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-chdir(".."); // For compatibality
+chdir(".."); // For compatibility
 chdir("..");
 require "lib/helper_httpCache.php";
 require "lib/helper_dir.php";
