@@ -216,11 +216,11 @@ browser.initDropUpload = function() {
             filesCount = 0;
             var loop = setInterval(function() {
                 if (uploadInProgress) return;
+                boundary = '------multipartdropuploadboundary' + (new Date).getTime();
                 uploadQueue = [];
                 clearInterval(loop);
                 if (currentFile.thisTargetDir == browser.dir)
                     browser.refresh();
-                boundary = '------multipartdropuploadboundary' + (new Date).getTime();
                 if (errors.length) {
                     browser.alert(errors.join('\n'));
                     errors = [];

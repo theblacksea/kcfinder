@@ -141,7 +141,7 @@ class dir {
                 $files[] = $options['addPath'] ? "$dir/$file" : $file;
         }
         closedir($dh);
-        usort($files, "dir::fileSort");
+        usort($files, array("dir", "fileSort"));
         return $files;
     }
 
