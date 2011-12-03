@@ -84,7 +84,7 @@ class image_imagick extends image {
 
         } else {
             $w = $width;
-            $h = ($this->height * $h) / $this->width;
+            $h = ($this->height * $w) / $this->width;
             $x = 0;
             if ($offset !== false) {
                 if ($offset > 0)
