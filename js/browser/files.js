@@ -401,6 +401,12 @@ browser.menuFile = function(file, e) {
             '<a href="kcact:download">' + this.label("Download") + '</a>';
 
         if (this.access.files.copy || this.access.files.move)
+            html += (html.length ? '<div class="delimiter"></div>' : '') +
+                '<a href="kcact:imgresize">' + this.label("Resize Image") + '</a>';
+        if (this.access.files.copy || this.access.files.move)
+            html += (html.length ? '' : '') +
+                '<a href="kcact:imgcrop">' + this.label("Crop Image") + '</a>';
+        if (this.access.files.copy || this.access.files.move)
             html += '<div class="delimiter"></div>' +
                 '<a href="kcact:clpbrdadd">' + this.label("Add to Clipboard") + '</a>';
         if (this.access.files.rename || this.access.files['delete'])
@@ -439,6 +445,14 @@ browser.menuFile = function(file, e) {
             $('#downloadForm input').get(1).value = data.name;
             $('#downloadForm').submit();
             return false;
+        });
+
+        $('.menu a[href="kcact:imgcrop"]').click(function() {
+            alert("Crop selected!");
+        });
+
+        $('.menu a[href="kcact:imgresize"]').click(function() {
+            alert("Resize selected!");
         });
 
         $('.menu a[href="kcact:clpbrdadd"]').click(function() {
