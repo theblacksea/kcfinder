@@ -22,7 +22,7 @@ $_CONFIG = array(
 // GENERAL SETTINGS
 
     'disabled' => false,
-    'theme' => "oxygen",
+    'theme' => "dark",
     'uploadURL' => "/kcfinder/upload",
     'uploadDir' => "",
 

@@ -365,14 +365,6 @@ tr.selected:hover > td {
     background-image: url(img/icons/delete.png);
 }
 
-.menu a[href="kcact:imgresize"] {
-    background-image: url(img/icons/resize.png);
-}
-
-.menu a[href="kcact:imgcrop"] {
-    background-image: url(img/icons/crop.png);
-}
-
 .menu a[href="kcact:clpbrdadd"] {
     background-image: url(img/icons/clipboard-add.png);
 }
