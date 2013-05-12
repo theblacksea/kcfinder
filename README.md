@@ -60,9 +60,10 @@ renaming, as it will become a full-featured fork.
 The features I aim for right now are (not necessarily in this order):
 
 * Image editing (crop, resize, rotate) from within the KCFinder window
+* User authentication option (avoiding guest sessions as much as possible)
+* Support for mounting (remote) FTP locations
 * Code editing plugin with syntax highlight (enabling it to be used as a small
   multipurpose tool)
-* Support for mounting (remote) FTP locations
 
 #### Repository and workflow
 
