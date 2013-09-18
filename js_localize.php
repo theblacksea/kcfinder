@@ -4,7 +4,7 @@
   *
   *      @desc Load language labels into JavaScript
   *   @package KCFinder
-  *   @version 2.52-dev
+  *   @version 3.0a1
   *    @author Pavel Tzonkov <pavelc@users.sourceforge.net>
   * @copyright 2010, 2011 KCFinder Project
   *   @license http://www.opensource.org/licenses/gpl-2.0.php GPLv2
