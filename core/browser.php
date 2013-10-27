@@ -20,6 +20,8 @@ class browser extends uploader {
     public function __construct() {
         parent::__construct();
 
+        //$this->errorMsg($this->post['token']);
+
         if (isset($this->post['dir'])) {
             $dir = $this->checkInputDir($this->post['dir'], true, false);
             if ($dir === false) unset($this->post['dir']);
@@ -45,7 +47,7 @@ class browser extends uploader {
                 !@mkdir("$thumbsDir/{$this->type}", $this->config['dirPerms'])
             )
         )
-            $this->errorMsg("Cannot access or create thumbnails folder.");
+            $this->errorMsg("Cannot access or create thumbnails folder ($thumbsDir).");
 
         $this->thumbsDir = $thumbsDir;
         $this->thumbsTypeDir = "$thumbsDir/{$this->type}";
@@ -130,7 +132,18 @@ class browser extends uploader {
         if (!is_array($tree['dirs']) || !count($tree['dirs']))
             unset($tree['dirs']);
         $files = $this->getFiles($this->session['dir']);
-        $dirWritable = dir::isWritable("{$this->config['uploadDir']}/{$this->session['dir']}");
+
+        // Check if multiple users is enabled
+        if ($this->config->multipleUsers == true) {
+            $user = $_COOKIE['username'];
+            $uploadsTree = $this->getTree($this->session['dir']);
+            if (in_array($user, $uploadsTree)) {
+                $dirWritable = dir::isWritable("{$this->config['uploadDir']}/{$this->session['dir']}");
+            }
+        } else {
+            $dirWritable = dir::isWritable("{$this->config['uploadDir']}/{$this->session['dir']}");
+        }
+
         $data = array(
             'tree' => &$tree,
             'files' => &$files,
@@ -155,9 +168,9 @@ class browser extends uploader {
             if ($image->initError)
                 $this->sendDefaultThumb($file);
             list($tmp, $tmp, $type) = getimagesize($file);
-            if (in_array($type, array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG)) &&
-                ($image->width <= $this->config['thumbWidth']) &&
-                ($image->height <= $this->config['thumbHeight'])
+            if (in_array($type, array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG))
+                && ($image->width <= $this->config['thumbWidth'])
+                && ($image->height <= $this->config['thumbHeight'])
             ) {
                 $mime =
                     ($type == IMAGETYPE_GIF) ? "gif" : (
@@ -722,7 +735,7 @@ class browser extends uploader {
                       in_array($size[2], array(IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_JPEG));
               }
             }
-             
+
             $stat = stat($file);
             if ($stat === false) continue;
             $name = basename($file);

@@ -16,15 +16,18 @@
 // you are using session configuration.
 // See http://kcfinder.sunhater.com/install for setting descriptions
 
-$_CONFIG = array(
+$publicDir = $_SERVER['DOCUMENT_ROOT'];
+$publicUrl = 'http://'.$_SERVER['HTTP_HOST'];
+
+$_DEFAULTS = array(
 
 
 // GENERAL SETTINGS
 
-    'disabled' => false,
-    'theme' => "dark",
-    'uploadURL' => "/kcfinder/upload",
-    'uploadDir' => "",
+    'disabled'  => false,
+    'theme'     => "dark",
+    'uploadURL' => "$publicUrl/RES/uploads",
+    'uploadDir' => "$publicDir/RES/uploads",
 
     'types' => array(
 
@@ -39,6 +42,13 @@ $_CONFIG = array(
         'image'   =>  "*img",
     ),
 
+    'multipleUsers' => array(
+        'enabled'       => true,
+        'lockToHome'    => false,
+        'rwHomes'       => false,
+        'tokenJson'     => 'users.json',
+        'requestMethod' => 'get'
+    ),
 
 // IMAGE SETTINGS
 
@@ -118,5 +128,23 @@ $_CONFIG = array(
     //'_sessionDomain' => ".mysite.com",
     //'_sessionPath' => "/my/path",
 );
+
+/* Include a local config, if any
+ *
+ * This is the best place to override default settings, and add any
+ * business logic to the configuration. It is not advisable to hack the
+ * main config structure, although it may provide a quick and painless
+ * solution :-)
+ **/
+
+if (file_exists(dirname(__FILE__) . '/config.local.php')) {
+    require_once dirname(__FILE__) . '/config.local.php';
+}
+
+if (isset($_LOCALS)) {
+    $_CONFIG = array_merge($_DEFAULTS, $_LOCALS);
+} else {
+    $_CONFIG =& $_DEFAULTS;
+}
 
 ?>
