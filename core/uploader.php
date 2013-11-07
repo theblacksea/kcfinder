@@ -333,6 +333,21 @@ class uploader {
                     if (function_exists('chmod'))
                         @chmod($target, $this->config['filePerms']);
                     $this->makeThumb($target);
+                    if (isset($this->config['extraThumbnails'])) {
+                        die('entered!');
+                        foreach ($this->config['extraThumbnails'] as $a) {
+                            // Hack the config values to trick the thumbnail
+                            // creator; FIXME: fork the makeThumb method and
+                            // remove this ugly hack
+                            $this->config['thumbWidth']  = $a['thumbWidth'];
+                            $this->config['thumbHeight'] = $a['thumbHeight'];
+                            // Define the suffix used in file names,
+                            // e.g. DSC82347_300x200.png
+                            $suffix = '_' . $a['thumbWidth'] . 'x' . $a['thumbHeight'];
+
+                            $this->makeThumb($target, true, $suffix);
+                        }
+                    }
                     $url = $this->typeURL;
                     if (isset($udir)) $url .= "/$udir";
                     $url .= "/" . basename($target);
@@ -605,15 +620,25 @@ class uploader {
         ));
     }
 
-    protected function makeThumb($file, $overwrite=true) {
+    protected function makeThumb($file, $overwrite=true, $suffix="") {
         $img = image::factory($this->imageDriver, $file);
 
         // Drop files which are not images
         if ($img->initError)
             return true;
 
+        $filename  = pathinfo($file, PATHINFO_FILENAME);
+        $extension = pathinfo($file, PATHINFO_EXTENSION);
+
         $thumb = substr($file, strlen($this->config['uploadDir']));
         $thumb = $this->config['uploadDir'] . "/" . $this->config['thumbsDir'] . "/" . $thumb;
+
+        $thumb = str_replace(
+            $filename . '.' . $extension,
+            $filename . "$suffix" . '.' . $extension,
+            $thumb
+        );
+
         $thumb = path::normalize($thumb);
         $thumbDir = dirname($thumb);
         if (!is_dir($thumbDir) && !@mkdir($thumbDir, $this->config['dirPerms'], true))

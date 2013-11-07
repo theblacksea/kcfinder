@@ -364,9 +364,20 @@ class browser extends uploader {
 
         $thumb = "{$this->thumbsTypeDir}/{$this->post['dir']}/{$this->post['file']}";
         if (file_exists($thumb)) @unlink($thumb);
+        if (isset($this->config['extraThumbnails']))
+            $this->removeExtraThumbnails($this->post['file']);
         return true;
     }
 
+    protected function removeExtraThumbnails($image) {
+        $filename  = pathinfo($image, PATHINFO_FILENAME);
+        $extension = pathinfo($image, PATHINFO_EXTENSION);
+        foreach (
+            glob("{$this->thumbsTypeDir}/{$this->post['dir']}/{$filename}_[0-9]*x[0-9]*.{$extension}")
+            as $thumbnail) {
+                @unlink($thumbnail);
+            }
+    }
     protected function act_cp_cbd() {
         $dir = $this->postDir();
         if (!$this->config['access']['files']['copy'] ||
@@ -697,6 +708,20 @@ class browser extends uploader {
             chmod($target, $this->config['filePerms']);
 
         $this->makeThumb($target);
+        if (isset($this->config['extraThumbnails'])) {
+            foreach ($this->config['extraThumbnails'] as $a) {
+                // Hack the config values to trick the thumbnail
+                // creator; FIXME: fork the makeThumb method and
+                // remove this ugly hack
+                $this->config['thumbWidth']  = $a['thumbWidth'];
+                $this->config['thumbHeight'] = $a['thumbHeight'];
+                // Define the suffix used in file names,
+                // e.g. DSC82347_300x200.png
+                $suffix = '_' . $a['thumbWidth'] . 'x' . $a['thumbHeight'];
+
+                $this->makeThumb($target, true, $suffix);
+            }
+        }
         return "/" . basename($target);
     }
 
