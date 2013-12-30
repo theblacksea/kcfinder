@@ -147,4 +147,19 @@ if (isset($_LOCALS)) {
     $_CONFIG =& $_DEFAULTS;
 }
 
+// Temporary fix for some CSRF issues
+// Deny all requests not coming from the same domain
+// FIXME: Refactor this, integrate in core app
+//
+// To apply this, copy and uncomment the following snippet to config.local.php
+
+/*
+$origin = parse_url($_SERVER['HTTP_REFERER']);
+
+if($origin['host'] != 'theblacksea.eu') {
+        die('Warning, access forbidden!');
+}
+*/
+
+
 ?>
