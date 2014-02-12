@@ -276,15 +276,32 @@ class browser extends uploader {
         if (is_array($this->file['name'])) {
             $return = array();
             foreach ($this->file['name'] as $i => $name) {
+                $tmp_name = $this->file['tmp_name'][$i];
+
                 $return[] = $this->moveUploadFile(array(
                     'name' => $name,
-                    'tmp_name' => $this->file['tmp_name'][$i],
+                    'tmp_name' => $tmp_name,
                     'error' => $this->file['error'][$i]
                 ), $dir);
+
+                if ($this->config['read_exif'] == true) {
+                    $exif = exif_read_data($dir.'/'.$name, 'IFD0');
+                    file_put_contents(
+                        str_replace('/uploads/', '/uploads/.thumbs/', $dir)
+                        . "/$name.exif",
+                        json_encode($exif)
+                    );
+                    error_log('New EXIF file for ' . $name);
+                }
             }
             return implode("\n", $return);
-        } else
+        } else {
+            if ($this->config['read_exif'] == true) {
+                $exif = exif_read_data($this->file, 'IFD0');
+                file_put_contents('/tmp/exif', json_encode($exif));
+            }
             return $this->moveUploadFile($this->file, $dir);
+        }
     }
 
     protected function act_download() {
@@ -366,16 +383,28 @@ class browser extends uploader {
         if (file_exists($thumb)) @unlink($thumb);
         if (isset($this->config['extraThumbnails']))
             $this->removeExtraThumbnails($this->post['file']);
+            $this->removeExifData($this->post['file']);
         return true;
     }
 
+    protected function removeExifData($image) {
+        $filename  = pathinfo($image, PATHINFO_FILENAME);
+        $extension = pathinfo($image, PATHINFO_EXTENSION);
+        foreach (
+            glob("{$this->thumbsTypeDir}/{$this->post['dir']}/{$filename}.{$extension}.exif")
+            as $exif) {
+                error_log('Deleted exif ' . $exif);
+                unlink($exif);
+            }
+    }
     protected function removeExtraThumbnails($image) {
         $filename  = pathinfo($image, PATHINFO_FILENAME);
         $extension = pathinfo($image, PATHINFO_EXTENSION);
         foreach (
             glob("{$this->thumbsTypeDir}/{$this->post['dir']}/{$filename}_[0-9]*x[0-9]*.{$extension}")
             as $thumbnail) {
-                @unlink($thumbnail);
+                error_log('Deleted thumbnail ' . $thumbnail);
+                unlink($thumbnail);
             }
     }
     protected function act_cp_cbd() {
