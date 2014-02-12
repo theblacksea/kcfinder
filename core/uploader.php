@@ -327,9 +327,9 @@ class uploader {
                 if (!@move_uploaded_file($file['tmp_name'], $target) &&
                     !@rename($file['tmp_name'], $target) &&
                     !@copy($file['tmp_name'], $target)
-                )
+                ) {
                     $message = $this->label("Cannot move uploaded file to target folder.");
-                else {
+                } else {
                     if (function_exists('chmod'))
                         @chmod($target, $this->config['filePerms']);
                     $this->makeThumb($target);
@@ -347,6 +347,10 @@ class uploader {
 
                             $this->makeThumb($target, true, $suffix);
                         }
+                    }
+                    if ($this->config['read_exif'] == true) {
+                        $exif = exif_read_data($target, 'IFD0');
+                        file_put_contents(json_encode($exif), '/tmp/exif');
                     }
                     $url = $this->typeURL;
                     if (isset($udir)) $url .= "/$udir";
