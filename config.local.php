@@ -2,7 +2,7 @@
 
 $origin = parse_url($_SERVER['HTTP_REFERER']);
 
-if($origin['host'] != 'theblacksea.eu') {
+if($origin['host'] != $_SERVER['SERVER_NAME']) {
         die('Warning, access forbidden!');
 }
 
