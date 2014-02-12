@@ -286,6 +286,14 @@ class browser extends uploader {
 
                 if ($this->config['read_exif'] == true) {
                     $exif = exif_read_data($dir.'/'.$name, 'IFD0');
+
+                    // Hack the quotes, since they will surely destroy everything due to CKEditor's
+                    // evil escape-everything policy (tried with entities, utf-8 chars, everything,
+                    // this shit's very very fucked).
+                    $exif['ImageDescription'] = str_replace('"','`', $exif['ImageDescription']);
+                    $exif['ImageDescription'] = str_replace("'",'`', $exif['ImageDescription']);
+
+                    // Now that the quotes are gone, safely write the stuff down to the EXIF file
                     file_put_contents(
                         str_replace('/uploads/', '/uploads/.thumbs/', $dir)
                         . "/$name.exif",
