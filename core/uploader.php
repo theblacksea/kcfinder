@@ -350,6 +350,7 @@ class uploader {
                     }
                     if ($this->config['read_exif'] == true) {
                         $exif = exif_read_data($target, 'IFD0');
+                        //$exif->ImageDescription = htmlentities($exif->ImageDescription, ENT_QUOTES);
                         file_put_contents(json_encode($exif), '/tmp/exif');
                     }
                     $url = $this->typeURL;
